@@ -9,7 +9,11 @@
 <script>
     let canvas = document.getElementById('khunghinh');
     let ctx = canvas.getContext('2d');
-    let score=0
+    let score=0;
+    let audio2= new Audio()
+    audio2.src="damdau.mp3";
+    let audio1= new Audio();
+    audio1.src="andiem.mp3";
     let background = new Image();
     background.src = 'anhtroi.jpg';
     function drawscore(){
@@ -19,18 +23,15 @@
     function drawnen() {
         ctx.drawImage(background, 0, 0, 700, 700)
     }
-
     let chim = new Image();
     chim.src = 'daibang.png';
-    let x = 110
-
-    function drawmaybay() {
+    let x = 110;
+    function drawchim() {
         ctx.drawImage(chim, x, 120, 70, 25);
     }
-
     class Buom {
         constructor(x) {
-            this.img = new Image()
+            this.img = new Image();
             this.img.src = 'buom.png';
             this.width = 20;
             this.height = 15;
@@ -41,60 +42,55 @@
                 y: 1
             }
         }
-
         draw() {
-            ctx.drawImage(this.img, this.x, this.y, this.width, this.height,);
+            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
         }
-
         update() {
             this.draw();
             this.y += this.velocity.y;
         }
     }
-
     let buom = []
-
     function spawnEnemy() {
-        let inte = setInterval(() => {
+        setInterval(() => {
             let x = Math.random() * canvas.width;
-            buom.push(new Buom(x))
-        }, 800)
-    }
-
+            buom.push(new Buom(x));
+        }, 1600)}
     spawnEnemy();
-
     window.addEventListener('keydown', (event) => {
         switch (event.key) {
             case 'd':
                 if(x+70<canvas.width)
                 x += 15
-                break
+                break;
         }
         switch (event.key) {
             case 'a':
-                if (x>0){
+                if (x>0) {
                 x += -15
-                break}
+                break
+                }
         }
     })
-
     function animate() {
         let ani = requestAnimationFrame(animate);
         drawnen();
-        drawmaybay();
+        drawchim();
         for (let i = 0; i < buom.length; i++) {
             if (buom[i].x <= x + 70 && buom[i].x >= x && buom[i].y+15>=125){
-                alert('GAME OVER');
+                audio2.play();
+                alert('Chú bé đần...');
                 alert('Điểm của bạn là: '+score);
-                window.cancelAnimationFrame(ani)
-                window.location.reload()
+                window.cancelAnimationFrame(ani);
+                window.location.reload();
             }
             if (buom[i].y + buom[i].height > canvas.height){
                 buom.splice(i, 1);
                 score+=1
+                audio1.play();
 
             }
-            buom[i].update()
+            buom[i].update();
         }drawscore();
     }
     animate()
